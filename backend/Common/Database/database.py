@@ -1,19 +1,20 @@
-from fastapi import Depends
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from typing import Annotated
-from sqlalchemy.orm import Session
-from sqlalchemy.orm import Session
+# import pandas as pd
 
-URL_DATABASE = "postgresql://postgres:qwdfty54nm@localhost:5433/occult.db"
-engine = create_engine(URL_DATABASE)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# df = pd.read_csv('books.csv')
 
-def get_db_connection():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+# books_df_cleaned = df.copy()
 
-db_dependencies = Annotated[Session, Depends(get_db_connection)]
+# # filling categorical columns
+# books_df_cleaned['authors'].fillna('unknown', inplace=True)
+# books_df_cleaned['subtitle'].fillna('unknown', inplace=True)
+# books_df_cleaned['categories'].fillna('unknown', inplace=True)
+# books_df_cleaned['thumbnail'].fillna('no thumbnail', inplace=True)
+# books_df_cleaned['description'].fillna('no description', inplace=True)
+
+# # filling the numerical columns
+# books_df_cleaned['published_year'].fillna(books_df_cleaned['published_year'].median(), inplace=True)
+# books_df_cleaned['average_rating'].fillna(books_df_cleaned['average_rating'].mean(), inplace=True)
+# books_df_cleaned['num_pages'].fillna(books_df_cleaned['num_pages'].median(), inplace=True)
+# books_df_cleaned['ratings_count'].fillna(books_df_cleaned['ratings_count'].median(), inplace=True)
+
+# print(books_df_cleaned)

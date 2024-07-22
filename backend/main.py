@@ -1,20 +1,23 @@
-from fastapi import FastAPI
-from Routes import users, books, authors
-from Common.Database.models import Base
-from Common.Database.database import engine
+import streamlit as st
+import pandas as pd
 
-Base.metadata.create_all(bind=engine)
+df = pd.read_csv('books.csv')
 
-app = FastAPI()
+books_df_cleaned = df.copy()
 
-app.include_router(users.router)
-app.include_router(books.router)
-app.include_router(authors.router)
+# filling categorical columns
+books_df_cleaned['authors'].fillna('unknown', inplace=True)
+books_df_cleaned['subtitle'].fillna('unknown', inplace=True)
+books_df_cleaned['categories'].fillna('unknown', inplace=True)
+books_df_cleaned['thumbnail'].fillna('no thumbnail', inplace=True)
+books_df_cleaned['description'].fillna('no description', inplace=True)
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to the Simple User API"}
+# filling the numerical columns
+books_df_cleaned['published_year'].fillna(books_df_cleaned['published_year'].median(), inplace=True)
+books_df_cleaned['average_rating'].fillna(books_df_cleaned['average_rating'].mean(), inplace=True)
+books_df_cleaned['num_pages'].fillna(books_df_cleaned['num_pages'].median(), inplace=True)
+books_df_cleaned['ratings_count'].fillna(books_df_cleaned['ratings_count'].median(), inplace=True)
 
-@app.get("/healthcheck")
-def health_check():
-        return {"message": "API is running"}
+books_df_cleaned
+
+st.write("Hello world")

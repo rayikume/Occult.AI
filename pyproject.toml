@@ -13,6 +13,9 @@ fastapi = "^0.111.1"
 sqlalchemy = "^2.0.31"
 psycopg2 = "^2.9.9"
 sqlalchemy-orm = "^1.2.10"
+pandas = "^2.2.2"
+nltk = "^3.8.1"
+streamlit = "^1.36.0"
 
 
 [build-system]
