@@ -1,23 +1,41 @@
 import streamlit as st
-import pandas as pd
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_ollama.llms import OllamaLLM
 
-df = pd.read_csv('books.csv')
+model = OllamaLLM(model="llama3")
+textlist = []
 
-books_df_cleaned = df.copy()
+# Chatbox
+st.title("Nerd AI ☝️🤓")
 
-# filling categorical columns
-books_df_cleaned['authors'].fillna('unknown', inplace=True)
-books_df_cleaned['subtitle'].fillna('unknown', inplace=True)
-books_df_cleaned['categories'].fillna('unknown', inplace=True)
-books_df_cleaned['thumbnail'].fillna('no thumbnail', inplace=True)
-books_df_cleaned['description'].fillna('no description', inplace=True)
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-# filling the numerical columns
-books_df_cleaned['published_year'].fillna(books_df_cleaned['published_year'].median(), inplace=True)
-books_df_cleaned['average_rating'].fillna(books_df_cleaned['average_rating'].mean(), inplace=True)
-books_df_cleaned['num_pages'].fillna(books_df_cleaned['num_pages'].median(), inplace=True)
-books_df_cleaned['ratings_count'].fillna(books_df_cleaned['ratings_count'].median(), inplace=True)
+for message in st.session_state.messages:
+    if message["role"] == "assistant":
+        with st.chat_message(message["role"], avatar="🤓"):
+            st.markdown(message["content"])
+    else:
+        with st.chat_message(message["role"], avatar="🐤"):
+            st.markdown(message["content"])
 
-books_df_cleaned
+promptlit = st.chat_input("Enter your prompt here")
 
-st.write("Hello world")
+if promptlit:
+    with st.chat_message("user", avatar="🐤"):
+        st.markdown(promptlit)
+    st.session_state.messages.append({"role": "user", "content": promptlit})
+    textlist += promptlit
+
+    longtext = "".join(textlist)
+    template = "Remember this convo: {history} Answer this Question: {question}"
+    prompt = ChatPromptTemplate.from_template(template)
+    chain = prompt | model
+    response = chain.invoke({'history': {longtext}, 'question': f"{promptlit}"})
+    print(textlist)
+    print(st.session_state.messages)
+
+    with st.chat_message("assistant", avatar="🤓"):
+        st.markdown(response)
+        textlist += response
+    st.session_state.messages.append({"role": "assistant", "content": response})
