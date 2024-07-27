@@ -32,10 +32,11 @@ def classify_intent(state: State):
     input: {prompt}
     assess the following input and choose which one of the 4 categories that fit the input provided:
     categories:
-    1. user want to greet or talk,
-    2. user wants book recommendation,
-    3. user want to add a book,
-    4. user want to get a summery of a book.
+    1. user want to greet,
+    2. user want to talk about something outside of books topics,
+    3. user wants book recommendation,
+    4. user want to add a book,
+    5. user want to get a summery of a book.
     DON'T SAY ANYTHING JUST PRINT A CATEGORY EXACTLY LIKE PROVIDED [DON'T INCLUDE THE NUMBER].
     """
     prompt = ChatPromptTemplate.from_template(template)
@@ -54,10 +55,8 @@ def chatbot(state: State):
     return state
 
 def greet(state: State):
-    prompt = state["messages"][-1]
-    print(f"Greet prompt: {prompt}")
+    prompt = state["messages"][-1].content
     response = handle_greet(prompt)
-    print(f"Greet response: {response}")
     state["messages"].append({"role": "assistant", "content": response})
     return state
 
@@ -82,7 +81,7 @@ graph_builder.add_node("chatbot", chatbot)
 graph_builder.add_node("greet", greet)
 
 def decide_next_node(state: State):
-    if state["intent"] == "user want to greet" or state["intent"] == "user want to greet or talk":
+    if state["intent"] in ["user want to greet", "user wants to greet", "1. user want to greet"]:
         return "handle_greeting"
     else:
         return "handle_talk"
@@ -96,6 +95,10 @@ graph_builder.add_conditional_edges(
     }
 )
 
+graph_builder.set_entry_point("classify_intent")
+graph_builder.add_edge("greet", END)
+graph_builder.add_edge("chatbot", END)
+graph = graph_builder.compile()
 
 textlist = []
 
@@ -121,22 +124,9 @@ if promptlit:
 
     longtext = " ".join(textlist)
 
-    graph_builder.set_entry_point("classify_intent")
-    graph_builder.add_edge("greet", END)
-    graph_builder.add_edge("chatbot", END)
-    graph = graph_builder.compile()
-
-    # /query
-    # response = handle_query(promptlit)
-
     for event in graph.stream({"messages": [{"role": "user", "content": promptlit}]}):
         for value in event.values():
-            with st.chat_message("assistant", avatar="🤓"):
-                # Assuming `value` is a list of HumanMessage
-                for msg in value["messages"]:
-                    print(msg)  # This will display the HumanMessage object
-                    st.markdown(msg)  # Access the content attribute of the HumanMessage object
-            
-            # Append the content of the latest message
-            if value["messages"]:
-                st.session_state.messages.append({"role": "assistant", "content": value["messages"][-1]})
+            if isinstance(value["messages"][-1], Dict):
+                with st.chat_message("assistant", avatar="🤓"):
+                    st.markdown(value["messages"][-1]["content"])
+                st.session_state.messages.append({"role": "assistant", "content": value["messages"][-1]["content"]})

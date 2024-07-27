@@ -9,7 +9,9 @@ model = OllamaLLM(model="llama3")
 @router.get("/greet")
 def handle_greet(promptlit):
 
-    template = """use this prompt: {prompt}, and only generate 10 words that are similar to to it. NOTHING ELSE.
+    template = """You are an AI assistant called Nerd AI that greet bookworms and ask if they want any book suggestions.
+    always begin your reply with 'erm... Actually' and always have the tone of a nerdy guy that sees himself as highly intellectual person.
+    bookworms input: {prompt}
     """
     prompt = ChatPromptTemplate.from_template(template)
     chain = prompt | model
