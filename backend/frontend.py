@@ -3,12 +3,11 @@ import streamlit as st
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama.llms import OllamaLLM
 from langchain_ollama import ChatOllama
-from Routes.query import handle_query
+from Routes.query import handle_greet
 from typing import Annotated, List, Dict, Any
 from typing_extensions import TypedDict
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
-from IPython.display import Image, display
 
 os.environ["LANGSMITH_API_KEY"] = "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"
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
@@ -25,32 +24,44 @@ class State(TypedDict):
 graph_builder = StateGraph(State)
 
 llmG = ChatOllama(model="llama3", temperature=0)
-model = OllamaLLM(model="llama3")
+model = OllamaLLM(model="llama3", temperature=0)
 
 def recognize_intent(user_input: str) -> str:
-    user_input = user_input.lower()
-    if "hello" in user_input or "hi" in user_input:
-        return "greet"
-    elif "book" in user_input or "recommend" in user_input:
-        return "recommend_book"
-    else:
-        return "small_talk"
+    template = """
+    input: {prompt}
+    assess the following input and choose which one of the 4 categories that fit the input provided:
+    categories:
+    1. user want to greet or talk,
+    2. user wants book recommendation,
+    3. user want to add a book,
+    4. user want to get a summery of a book.
+    DON'T SAY ANYTHING JUST PRINT A CATEGORY EXACTLY LIKE PROVIDED [DON'T INCLUDE THE NUMBER].
+    """
+    prompt = ChatPromptTemplate.from_template(template)
+    chain = prompt | model
+    response = chain.invoke({
+        'prompt': user_input,
+    })
+
+    return response
+    
+
+
 
 def chatbot(state: State):
     intent = recognize_intent(state["messages"][-1].content)
     state["intent"] = intent
-    if intent == "greet":
-        return greet(state)
-    elif intent == "recommend_book":
-        return recommend_book(state)
-    else:
-        return small_talk(state)
 
-def greet(state: State):
-    response = "AAAAAAAA"
-    state["messages"] = list(state["messages"])
-    state["messages"].append(response)
-    return {"messages": state["messages"]}
+    if 'greet or talk' in intent:
+        response = greet(intent)
+        state["messages"].append({"role": "assistant", "content": response})
+    else:
+        state["messages"].append({"role": "assistant", "content": "OK"})
+
+
+def greet(prompt: str) -> str:
+    response = handle_greet(prompt)
+    return response
 
 def add_new_book(state: State):
     response = "Sure!"
@@ -71,10 +82,6 @@ def small_talk(state: State):
     return {"messages": state["messages"]}
 
 # Add nodes to the graph
-graph_builder.add_node("greet", greet)
-graph_builder.add_node("recommend_book", recommend_book)
-graph_builder.add_node("small_talk", small_talk)
-graph_builder.add_node("add_new_book", add_new_book)
 graph_builder.add_node("chatbot", chatbot)
 
 textlist = []
@@ -102,15 +109,7 @@ if promptlit:
     longtext = " ".join(textlist)
 
     graph_builder.add_edge(START, "chatbot")
-    graph_builder.add_edge(START, "greet")
-    graph_builder.add_edge(START, "recommend_book")
-    graph_builder.add_edge(START, "small_talk")
-    graph_builder.add_edge(START, "add_new_book")
-    graph_builder.add_edge("greet", END)
-    graph_builder.add_edge("recommend_book", END)
-    graph_builder.add_edge("small_talk", END)
     graph_builder.add_edge("chatbot", END)
-    graph_builder.add_edge("add_new_book", END)
     graph = graph_builder.compile()
 
     # /query
