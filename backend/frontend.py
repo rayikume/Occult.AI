@@ -4,7 +4,7 @@ import streamlit as st
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama.llms import OllamaLLM
 from langchain_ollama import ChatOllama
-from Routes.query import handle_greet
+from Routes.query import handle_greet, handle_adding_new_book
 from typing import Annotated, List, Dict, Any, Optional
 from typing_extensions import TypedDict
 from langgraph.graph import StateGraph, START, END
@@ -60,18 +60,20 @@ def greet(state: State):
     state["messages"].append({"role": "assistant", "content": response})
     return state
 
-# def add_new_book(state: State):
-#     response = "Sure!"
+# def small_talk(state: State):
+#     prompt = state["messages"][-1].content
+#     response = handle_greet(prompt)
 #     state["messages"].append({"role": "assistant", "content": response})
-#     return {"messages": state["messages"]}
+#     return state
+
+def add_new_book(state: State):
+    prompt = state["messages"][-1].content
+    response = handle_adding_new_book(prompt)
+    state["messages"].append({"role": "assistant", "content": response})
+    return state
 
 # def recommend_book(state: State):
 #     response = "Can you tell me what genre you're interested in?"
-#     state["messages"].append({"role": "assistant", "content": response})
-#     return {"messages": state["messages"]}
-
-# def small_talk(state: State):
-#     response = "Sure, let's chat! How's your day going?"
 #     state["messages"].append({"role": "assistant", "content": response})
 #     return {"messages": state["messages"]}
 
@@ -79,10 +81,13 @@ def greet(state: State):
 graph_builder.add_node("classify_intent", classify_intent)
 graph_builder.add_node("chatbot", chatbot)
 graph_builder.add_node("greet", greet)
+graph_builder.add_node("add_new_book", add_new_book)
 
 def decide_next_node(state: State):
     if state["intent"] in ["user want to greet", "user wants to greet", "1. user want to greet"]:
         return "handle_greeting"
+    elif state["intent"] in ["user want to add a book", "user wants to add a book", "2. user want to add a book"]:
+        return "handle_adding_new_book"
     else:
         return "handle_talk"
 
@@ -91,12 +96,14 @@ graph_builder.add_conditional_edges(
     decide_next_node,
     {
         "handle_greeting": "greet",
-        "handle_talk": "chatbot"
+        "handle_talk": "chatbot",
+        "handle_adding_new_book": "add_new_book",
     }
 )
 
 graph_builder.set_entry_point("classify_intent")
 graph_builder.add_edge("greet", END)
+graph_builder.add_edge("add_new_book", END)
 graph_builder.add_edge("chatbot", END)
 graph = graph_builder.compile()
 
