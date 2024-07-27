@@ -1,10 +1,11 @@
+import logging
 import os
 import streamlit as st
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama.llms import OllamaLLM
 from langchain_ollama import ChatOllama
 from Routes.query import handle_greet
-from typing import Annotated, List, Dict, Any
+from typing import Annotated, List, Dict, Any, Optional
 from typing_extensions import TypedDict
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
@@ -19,14 +20,14 @@ if "messages" not in st.session_state:
 
 class State(TypedDict):
     messages: Annotated[List[Dict[str, Any]], add_messages]
-    intent: str
+    intent: Optional[str]
 
 graph_builder = StateGraph(State)
 
 llmG = ChatOllama(model="llama3", temperature=0)
 model = OllamaLLM(model="llama3", temperature=0)
 
-def recognize_intent(user_input: str) -> str:
+def classify_intent(state: State):
     template = """
     input: {prompt}
     assess the following input and choose which one of the 4 categories that fit the input provided:
@@ -40,49 +41,61 @@ def recognize_intent(user_input: str) -> str:
     prompt = ChatPromptTemplate.from_template(template)
     chain = prompt | model
     response = chain.invoke({
-        'prompt': user_input,
+        'prompt': state["messages"][-1].content,
     })
 
-    return response
-    
+    state["intent"] = response
+    print(response)
 
-
+    return state
 
 def chatbot(state: State):
-    intent = recognize_intent(state["messages"][-1].content)
-    state["intent"] = intent
+    state["messages"].append({"role": "assistant", "content": "OK"})
+    return state
 
-    if 'greet or talk' in intent:
-        response = greet(intent)
-        state["messages"].append({"role": "assistant", "content": response})
-    else:
-        state["messages"].append({"role": "assistant", "content": "OK"})
-
-
-def greet(prompt: str) -> str:
+def greet(state: State):
+    prompt = state["messages"][-1]
+    print(f"Greet prompt: {prompt}")
     response = handle_greet(prompt)
-    return response
+    print(f"Greet response: {response}")
+    state["messages"].append({"role": "assistant", "content": response})
+    return state
 
-def add_new_book(state: State):
-    response = "Sure!"
-    state["messages"] = list(state["messages"])
-    state["messages"].append(response)
-    return {"messages": state["messages"]}
+# def add_new_book(state: State):
+#     response = "Sure!"
+#     state["messages"].append({"role": "assistant", "content": response})
+#     return {"messages": state["messages"]}
 
-def recommend_book(state: State):
-    response = "Can you tell me what genre you're interested in?"
-    state["messages"] = list(state["messages"])
-    state["messages"].append(response)
-    return {"messages": state["messages"]}
+# def recommend_book(state: State):
+#     response = "Can you tell me what genre you're interested in?"
+#     state["messages"].append({"role": "assistant", "content": response})
+#     return {"messages": state["messages"]}
 
-def small_talk(state: State):
-    response = "Sure, let's chat! How's your day going?"
-    state["messages"] = list(state["messages"])
-    state["messages"].append(response)
-    return {"messages": state["messages"]}
+# def small_talk(state: State):
+#     response = "Sure, let's chat! How's your day going?"
+#     state["messages"].append({"role": "assistant", "content": response})
+#     return {"messages": state["messages"]}
 
 # Add nodes to the graph
+graph_builder.add_node("classify_intent", classify_intent)
 graph_builder.add_node("chatbot", chatbot)
+graph_builder.add_node("greet", greet)
+
+def decide_next_node(state: State):
+    if state["intent"] == "user want to greet" or state["intent"] == "user want to greet or talk":
+        return "handle_greeting"
+    else:
+        return "handle_talk"
+
+graph_builder.add_conditional_edges(
+    "classify_intent",
+    decide_next_node,
+    {
+        "handle_greeting": "greet",
+        "handle_talk": "chatbot"
+    }
+)
+
 
 textlist = []
 
@@ -108,15 +121,22 @@ if promptlit:
 
     longtext = " ".join(textlist)
 
-    graph_builder.add_edge(START, "chatbot")
+    graph_builder.set_entry_point("classify_intent")
+    graph_builder.add_edge("greet", END)
     graph_builder.add_edge("chatbot", END)
     graph = graph_builder.compile()
 
     # /query
     # response = handle_query(promptlit)
 
-    for event in graph.stream({"messages": ("user", promptlit)}):
+    for event in graph.stream({"messages": [{"role": "user", "content": promptlit}]}):
         for value in event.values():
             with st.chat_message("assistant", avatar="🤓"):
-                st.markdown(value["messages"][-1])
-            st.session_state.messages.append({"role": "assistant", "content": value["messages"][-1]})
+                # Assuming `value` is a list of HumanMessage
+                for msg in value["messages"]:
+                    print(msg)  # This will display the HumanMessage object
+                    st.markdown(msg)  # Access the content attribute of the HumanMessage object
+            
+            # Append the content of the latest message
+            if value["messages"]:
+                st.session_state.messages.append({"role": "assistant", "content": value["messages"][-1]})
