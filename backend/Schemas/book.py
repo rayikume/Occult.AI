@@ -7,3 +7,4 @@ class BookSchema(BaseModel):
     author_id: int
     genre: Optional[str] = None
     description: Optional[str] = None
+    thumbnail: Optional[str] = None

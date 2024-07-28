@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS books (
     author_id INT NOT NULL,
     genre VARCHAR(100),
     description TEXT,
+    thumbnail TEXT
     FOREIGN KEY (author_id) REFERENCES authors(author_id)
 );
 

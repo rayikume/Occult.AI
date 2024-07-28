@@ -51,5 +51,6 @@ class Book(Base):
     author_id = Column(Integer, ForeignKey("authors.author_id"))
     genre = Column(String)
     description = Column(String)
+    thumbnail = Column(String)
 
     author = relationship("Author", back_populates="books")
