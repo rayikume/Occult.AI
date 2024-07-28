@@ -45,7 +45,7 @@ To get started with Occult.AI, follow these steps:
 To run the project locally, execute the following command:
 
 ```bash
-streamlit run app.py
+streamlit run frontend.py
 ```
 
 ## Code Overview
