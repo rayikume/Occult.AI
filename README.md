@@ -66,3 +66,10 @@ The `query.py` script handles the backend logic for processing user queries. It 
 - Parsing user input.
 - Interfacing with AI models to generate responses.
 - Returning processed results to be displayed by the frontend.
+
+### Endpoints
+
+- /greet: takes the prompt and responed with greet from an AI model.
+- /addbook: takes the prompt and responed by confermation that the book is added to the database.
+- /recommendation: takes the prompt and responed with a table of most relateable books based on user's prompt.
+- /summerization: takes the prompt and responed with a reply from an AI model summarizing the book that the user requested.
