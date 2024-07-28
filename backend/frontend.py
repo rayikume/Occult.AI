@@ -4,7 +4,7 @@ import streamlit as st
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama.llms import OllamaLLM
 from langchain_ollama import ChatOllama
-from Routes.query import handle_greet, handle_adding_new_book, handle_book_recommendation
+from Routes.query import handle_greet, handle_adding_new_book, handle_book_recommendation, handle_book_summerization
 from typing import Annotated, List, Dict, Any, Optional
 from typing_extensions import TypedDict
 from langgraph.graph import StateGraph, END
@@ -60,11 +60,11 @@ def greet(state: State):
     state["messages"].append({"role": "assistant", "content": response})
     return state
 
-# def small_talk(state: State):
-#     prompt = state["messages"][-1].content
-#     response = handle_greet(prompt)
-#     state["messages"].append({"role": "assistant", "content": response})
-#     return state
+def summerize_book(state: State):
+    prompt = state["messages"][-1].content
+    response = handle_book_summerization(prompt)
+    state["messages"].append({"role": "assistant", "content": response})
+    return state
 
 def add_new_book(state: State):
     prompt = state["messages"][-1].content
@@ -83,14 +83,17 @@ graph_builder.add_node("chatbot", chatbot)
 graph_builder.add_node("greet", greet)
 graph_builder.add_node("add_new_book", add_new_book)
 graph_builder.add_node("recommend_book", recommend_book)
+graph_builder.add_node("summerize_book", summerize_book)
 
 def decide_next_node(state: State):
     if state["intent"] in ["user want to greet", "user wants to greet", "1. user want to greet"]:
         return "handle_greeting"
-    elif state["intent"] in ["user want to add a book", "user wants to add a book", "2. user want to add a book"]:
+    elif state["intent"] in ["user want to add a book", "user wants to add a book", "4. user want to add a book"]:
         return "handle_adding_new_book"
     elif state["intent"] in ["user want book recommendation", "user wants book recommendation", "3. user want book recommendation", "3. user wants book recommendation"]:
         return "handle_book_recommendation"
+    elif "summary" in state["intent"]:
+        return "handle_book_summery"
     else:
         return "handle_talk"
 
@@ -101,7 +104,8 @@ graph_builder.add_conditional_edges(
         "handle_greeting": "greet",
         "handle_talk": "chatbot",
         "handle_adding_new_book": "add_new_book",
-        "handle_book_recommendation": "recommend_book"
+        "handle_book_recommendation": "recommend_book",
+        "handle_book_summery": "summerize_book"
     }
 )
 
@@ -109,6 +113,7 @@ graph_builder.set_entry_point("classify_intent")
 graph_builder.add_edge("greet", END)
 graph_builder.add_edge("add_new_book", END)
 graph_builder.add_edge("recommend_book", END)
+graph_builder.add_edge("summerize_book", END)
 graph_builder.add_edge("chatbot", END)
 graph = graph_builder.compile()
 

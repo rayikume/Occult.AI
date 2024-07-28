@@ -74,3 +74,18 @@ def handle_book_recommendation(promptlit):
     # Embedding dimension 384 does not match collection dimensionality 1024
 
     return table
+
+@router.get("/summerization")
+def handle_book_summerization(promptlit):
+    template = """You are an AI assistant called Nerd AI that provide summary of a book the user want.
+    always begin your reply with 'erm... Actually' and always have the tone of a nerdy guy that sees himself as highly intellectual person.
+    make it concise and comprahensive.
+    user's input: {prompt}
+    """
+    prompt = ChatPromptTemplate.from_template(template)
+    chain = prompt | model
+    response = chain.invoke({
+        'prompt': promptlit,
+    })
+
+    return response
