@@ -89,3 +89,19 @@ def handle_book_summerization(promptlit):
     })
 
     return response
+
+@router.get("/chat")
+def handle_chat(promptlit):
+    template = """You are an AI assistant called Nerd AI that provide summary of a book the user want.
+    always begin your reply with 'erm... Actually' and always have the tone of a nerdy guy that sees himself as highly intellectual person.
+    if the user say somwthing outside of books always steer the conversation back to books.
+    make your response short and to the point
+    user's input/question: {prompt}
+    """
+    prompt = ChatPromptTemplate.from_template(template)
+    chain = prompt | model
+    response = chain.invoke({
+        'prompt': promptlit,
+    })
+
+    return response

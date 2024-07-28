@@ -4,7 +4,7 @@ import streamlit as st
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama.llms import OllamaLLM
 from langchain_ollama import ChatOllama
-from Routes.query import handle_greet, handle_adding_new_book, handle_book_recommendation, handle_book_summerization
+from Routes.query import handle_greet, handle_adding_new_book, handle_book_recommendation, handle_book_summerization, handle_chat
 from typing import Annotated, List, Dict, Any, Optional
 from typing_extensions import TypedDict
 from langgraph.graph import StateGraph, END
@@ -51,7 +51,9 @@ def classify_intent(state: State):
     return state
 
 def chatbot(state: State):
-    state["messages"].append({"role": "assistant", "content": "OK"})
+    prompt = state["messages"][-1].content
+    response = handle_chat(prompt)
+    state["messages"].append({"role": "assistant", "content": response})
     return state
 
 def greet(state: State):
