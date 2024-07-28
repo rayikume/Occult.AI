@@ -53,18 +53,24 @@ def handle_adding_new_book(promptlit):
 
     return "Erm... the book is submitted successfully."
 
+@router.get("/recommendation")
+def handle_book_recommendation(promptlit):
+    template = """You are an AI assistant that generate a list of 10 keywords of a book, 
+    based on what genre of books the user wants. [DON'T SAY ANYTHING JUST PRINT THE LIST]
+    dont't say: Here is a list of 10 keywords for etc...
+    user's input: {prompt}
+    """
+    prompt = ChatPromptTemplate.from_template(template)
+    chain = prompt | model
+    response = chain.invoke({
+        'prompt': promptlit,
+    })
 
-# template = """You are an AI assistant called Nerd AI that greet bookworms and ask if they want any book suggestions.
-# always begin your reply with 'erm... Actually' and always have the tone of a nerdy guy that sees himself as highly intellectual person.
-# bookworms input: {prompt}
-# """
-# prompt = ChatPromptTemplate.from_template(template)
-# chain = prompt | model
-# response = chain.invoke({
-#     'prompt': promptlit,
-# })
+    table = book_collection.query(
+        query_texts=response,
+        n_results=5
+    )
 
-# # db = book_collection.query(
-# #     query_texts=response,
-# #     n_results=5
-# # )
+    # Embedding dimension 384 does not match collection dimensionality 1024
+
+    return table

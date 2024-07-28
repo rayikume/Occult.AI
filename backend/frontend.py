@@ -4,10 +4,10 @@ import streamlit as st
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama.llms import OllamaLLM
 from langchain_ollama import ChatOllama
-from Routes.query import handle_greet, handle_adding_new_book
+from Routes.query import handle_greet, handle_adding_new_book, handle_book_recommendation
 from typing import Annotated, List, Dict, Any, Optional
 from typing_extensions import TypedDict
-from langgraph.graph import StateGraph, START, END
+from langgraph.graph import StateGraph, END
 from langgraph.graph.message import add_messages
 
 os.environ["LANGSMITH_API_KEY"] = "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"
@@ -72,22 +72,25 @@ def add_new_book(state: State):
     state["messages"].append({"role": "assistant", "content": response})
     return state
 
-# def recommend_book(state: State):
-#     response = "Can you tell me what genre you're interested in?"
-#     state["messages"].append({"role": "assistant", "content": response})
-#     return {"messages": state["messages"]}
+def recommend_book(state: State):
+    prompt = state["messages"][-1].content
+    response = handle_book_recommendation(prompt)
+    state["messages"].append({"role": "assistant", "content": response})
+    return state
 
-# Add nodes to the graph
 graph_builder.add_node("classify_intent", classify_intent)
 graph_builder.add_node("chatbot", chatbot)
 graph_builder.add_node("greet", greet)
 graph_builder.add_node("add_new_book", add_new_book)
+graph_builder.add_node("recommend_book", recommend_book)
 
 def decide_next_node(state: State):
     if state["intent"] in ["user want to greet", "user wants to greet", "1. user want to greet"]:
         return "handle_greeting"
     elif state["intent"] in ["user want to add a book", "user wants to add a book", "2. user want to add a book"]:
         return "handle_adding_new_book"
+    elif state["intent"] in ["user want book recommendation", "user wants book recommendation", "3. user want book recommendation", "3. user wants book recommendation"]:
+        return "handle_book_recommendation"
     else:
         return "handle_talk"
 
@@ -98,12 +101,14 @@ graph_builder.add_conditional_edges(
         "handle_greeting": "greet",
         "handle_talk": "chatbot",
         "handle_adding_new_book": "add_new_book",
+        "handle_book_recommendation": "recommend_book"
     }
 )
 
 graph_builder.set_entry_point("classify_intent")
 graph_builder.add_edge("greet", END)
 graph_builder.add_edge("add_new_book", END)
+graph_builder.add_edge("recommend_book", END)
 graph_builder.add_edge("chatbot", END)
 graph = graph_builder.compile()
 
