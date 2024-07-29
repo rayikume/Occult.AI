@@ -6,7 +6,11 @@ from Common.Database.models import Book, Author, UserPreference
 from Schemas.book import BookSchema
 
 def get_books(db: Session):
-    return db.query(Book).all()
+    gala = []
+    for entrie in range(1, 20):
+        entrie = db.query(Book)
+        gala.append(entrie)
+    return gala
 
 def get_book_by_id(db: Session, book_id: int):
     return db.query(Book).filter(Book.book_id == book_id).first()
