@@ -41,16 +41,11 @@ class Author(Base):
     name = Column(String, index=True)
     biography = Column(String)
 
-    books = relationship("Book", back_populates="author")
-
 class Book(Base):
     __tablename__ = "books"
 
     book_id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
-    author_id = Column(Integer, ForeignKey("authors.author_id"))
     genre = Column(String)
     description = Column(String)
     thumbnail = Column(String)
-
-    author = relationship("Author", back_populates="books")

@@ -5,10 +5,24 @@ from Routes import users, books, authors
 from sqlalchemy.orm import Session
 from Common.Database.models import Base, Book
 from Common.Database.database import engine, get_db_connection
+from fastapi.middleware.cors import CORSMiddleware
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+origins = [
+    "http://127.0.0.1:5500",
+    # add other origins as needed
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(users.router)
 app.include_router(books.router)

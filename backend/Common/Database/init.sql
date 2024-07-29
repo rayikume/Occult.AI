@@ -16,11 +16,9 @@ CREATE TABLE IF NOT EXISTS authors (
 CREATE TABLE IF NOT EXISTS books (
     book_id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    author_id INT,
     genre VARCHAR(100),
     description TEXT,
     thumbnail TEXT
-    FOREIGN KEY (author_id) REFERENCES authors(author_id)
 );
 
 -- Create User Preferences Table

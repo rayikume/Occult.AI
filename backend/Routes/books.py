@@ -9,9 +9,8 @@ from Common.Services import book_services
 
 router = APIRouter()
 
-@router.get("/books", response_model=List[BookSchema], tags=["Books"], operation_id="get_books_list")
-def get_books(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
-    log_user_activity(db, current_user['username'], "Searched for all books")
+@router.get("/books", tags=["Books"], operation_id="get_books_list")
+def get_books(db: Session = Depends(get_db)):
     return book_services.get_books(db)
 
 @router.get("/books/{book_id}", response_model=BookSchema, tags=["Books"], operation_id="get_book_by_title")

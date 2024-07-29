@@ -1,19 +1,18 @@
-document.addEventListener("DOMContentLoaded", function () {
-  async function fetchData() {
-    try {
-      const response = await fetch("http://127.0.0.1:8000/books");
-      if (!response.ok) {
-        throw new Error("Network response was not ok " + response.statusText);
-      }
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error("There was a problem with the fetch operation:", error);
+async function fetchData() {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/books");
+    if (!response.ok) {
+      throw new Error("Network response was not ok " + response.statusText);
     }
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error("There was a problem with the fetch operation:", error);
   }
+}
 
+document.addEventListener("DOMContentLoaded", function () {
   fetchData();
-
   // Step 1: Create the parent div element
   const parentDiv = document.createElement("div");
   parentDiv.className = "book_container";
