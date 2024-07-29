@@ -1,0 +1,36 @@
+#flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 30px;
+  margin-bottom: 30px;
+  margin-top: 50px;
+}
+
+.title {
+  height: 12vh;
+  width: 60vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  font-size: 24px;
+  background-color: grey;
+}
+
+.search_engine {
+  height: 3vh;
+  width: 120vh;
+  background-color: gray;
+  border-radius: 5px;
+  border-style: none;
+}
+
+.search_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 6vh;
+  margin-bottom: 50px;
+}
