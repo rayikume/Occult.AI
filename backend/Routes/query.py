@@ -12,7 +12,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
 router = APIRouter()
-model = OllamaLLM(model="llama3")
+model = OllamaLLM(model="llama3.1")
 
 @router.get("/greet")
 def handle_greet(promptlit):
@@ -44,6 +44,8 @@ def handle_adding_new_book(promptlit):
         'prompt': promptlit,
     })
 
+    print(response)
+
     prompt_db = ollama.embeddings(model="mxbai-embed-large", prompt=response)
     embedding = prompt_db["embedding"]
     book_collection.add(
@@ -55,25 +57,32 @@ def handle_adding_new_book(promptlit):
 
 @router.get("/recommendation")
 def handle_book_recommendation(promptlit):
-    template = """You are an AI assistant that generate a list of 10 keywords of a book, 
-    based on what genre of books the user wants. [DON'T SAY ANYTHING JUST PRINT THE LIST]
-    dont't say: Here is a list of 10 keywords for etc...
+    template = """You are an AI assistant that recommend to the user books based on what category they want.
+    only get book from this database: {db}
     user's input: {prompt}
     """
+    # template = """You are an AI assistant that generate a list of 10 keywords of a book, 
+    # based on what genre of books the user wants. [DON'T SAY ANYTHING JUST PRINT THE LIST]
+    # dont't say: Here is a list of 10 keywords for etc...
+    # user's input: {prompt}
+    # """
     prompt = ChatPromptTemplate.from_template(template)
     chain = prompt | model
     response = chain.invoke({
         'prompt': promptlit,
+        'db': book_collection,
     })
 
-    table = book_collection.query(
-        query_texts=response,
-        n_results=5
-    )
+    print(response)
+
+    # table = book_collection.query(
+    #     query_texts=response,
+    #     n_results=5
+    # )
 
     # Embedding dimension 384 does not match collection dimensionality 1024
 
-    return table
+    return response
 
 @router.get("/summerization")
 def handle_book_summerization(promptlit):

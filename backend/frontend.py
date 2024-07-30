@@ -24,8 +24,8 @@ class State(TypedDict):
 
 graph_builder = StateGraph(State)
 
-llmG = ChatOllama(model="llama3", temperature=0)
-model = OllamaLLM(model="llama3", temperature=0)
+llmG = ChatOllama(model="llama3.1", temperature=0)
+model = OllamaLLM(model="llama3.1", temperature=0)
 
 def classify_intent(state: State):
     template = """
