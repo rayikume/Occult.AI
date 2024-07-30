@@ -1,4 +1,3 @@
-import logging
 import os
 import streamlit as st
 from langchain_core.prompts import ChatPromptTemplate
@@ -7,47 +6,74 @@ from langchain_ollama import ChatOllama
 from Routes.query import handle_greet, handle_adding_new_book, handle_book_recommendation, handle_book_summerization, handle_chat
 from typing import Annotated, List, Dict, Any, Optional
 from typing_extensions import TypedDict
-from langgraph.graph import StateGraph, END
+from langgraph.graph import StateGraph, END, START
 from langgraph.graph.message import add_messages
+from langchain.output_parsers import PydanticOutputParser
+from langchain_core.prompts import PromptTemplate
+from langchain_core.pydantic_v1 import BaseModel, Field, validator
 
-os.environ["LANGSMITH_API_KEY"] = "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"
-os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
+
+os.environ["LANGCHAIN_API_KEY"] = "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"
+# os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_PROJECT"] = "LangGraph Tutorial"
+os.environ["LANGCHAIN_ENDPOINT"] = "https://api.smith.langchain.com"
+# os.environ["LANGCHAIN_PROJECT"] = "LangGraph Tutorial"
+
+llmG = ChatOllama(model="llama3.1", temperature=0)
+model = OllamaLLM(model="llama3.1", temperature=0)
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
 class State(TypedDict):
     messages: Annotated[List[Dict[str, Any]], add_messages]
+    responses: str
+    table: Optional[list[str]]
     intent: Optional[str]
 
-graph_builder = StateGraph(State)
+workflow = StateGraph(State)
 
-llmG = ChatOllama(model="llama3.1", temperature=0)
-model = OllamaLLM(model="llama3.1", temperature=0)
+class UserIntent(BaseModel):
+    category: str = Field(description="category of the user's intent")
+
+    @validator('category', allow_reuse=True)
+    def validate_category(cls, res):
+        categories = [
+            "user want to greet",
+            "user want to talk about something outside of books topics",
+            "user wants book recommendation",
+            "user want to add a book",
+            "user want to get a summery of a book"
+        ]
+        print(res)
+        if res not in categories:
+            raise ValueError("Invalid category")
+        return res
 
 def classify_intent(state: State):
+    parser = PydanticOutputParser(pydantic_object=UserIntent)
     template = """
-    input: {prompt}
-    assess the following input and choose which one of the 4 categories that fit the input provided:
+    assess the following input and choose which one of the 5 categories that fit the input provided:
     categories:
     1. user want to greet,
     2. user want to talk about something outside of books topics,
     3. user wants book recommendation,
     4. user want to add a book,
     5. user want to get a summery of a book.
-    DON'T SAY ANYTHING JUST PRINT A CATEGORY EXACTLY LIKE PROVIDED [DON'T INCLUDE THE NUMBER].
+    DON'T SAY ANYTHING JUST PRINT A CATEGORY EXACTLY LIKE PROVIDED.
+    user's input: {prompt}
+    the format: {format}
     """
-    prompt = ChatPromptTemplate.from_template(template)
-    chain = prompt | model
+    prompt = PromptTemplate(
+        template=template,
+        input_variables=["prompt"],
+        partial_variables={"format": parser.get_format_instructions()},
+    )
+    chain = prompt | model | parser
     response = chain.invoke({
         'prompt': state["messages"][-1].content,
     })
-
-    state["intent"] = response
     print(response)
-
     return state
 
 def chatbot(state: State):
@@ -80,12 +106,12 @@ def recommend_book(state: State):
     state["messages"].append({"role": "assistant", "content": response})
     return state
 
-graph_builder.add_node("classify_intent", classify_intent)
-graph_builder.add_node("chatbot", chatbot)
-graph_builder.add_node("greet", greet)
-graph_builder.add_node("add_new_book", add_new_book)
-graph_builder.add_node("recommend_book", recommend_book)
-graph_builder.add_node("summerize_book", summerize_book)
+workflow.add_node("classify_intent", classify_intent)
+# graph_builder.add_node("chatbot", chatbot)
+# graph_builder.add_node("greet", greet)
+# graph_builder.add_node("add_new_book", add_new_book)
+# graph_builder.add_node("recommend_book", recommend_book)
+# graph_builder.add_node("summerize_book", summerize_book)
 
 def decide_next_node(state: State):
     if state["intent"] in ["user want to greet", "user wants to greet", "1. user want to greet"]:
@@ -99,25 +125,35 @@ def decide_next_node(state: State):
     else:
         return "handle_talk"
 
-graph_builder.add_conditional_edges(
-    "classify_intent",
-    decide_next_node,
+# graph_builder.add_conditional_edges(
+#     "classify_intent",
+#     decide_next_node,
+#     {
+#         "handle_greeting": "greet",
+#         "handle_talk": "chatbot",
+#         "handle_adding_new_book": "add_new_book",
+#         "handle_book_recommendation": "recommend_book",
+#         "handle_book_summery": "summerize_book"
+#     }
+# )
+
+workflow.add_conditional_edges(
+    START,
+    classify_intent,
     {
-        "handle_greeting": "greet",
-        "handle_talk": "chatbot",
-        "handle_adding_new_book": "add_new_book",
-        "handle_book_recommendation": "recommend_book",
-        "handle_book_summery": "summerize_book"
+        ""
     }
 )
 
-graph_builder.set_entry_point("classify_intent")
-graph_builder.add_edge("greet", END)
-graph_builder.add_edge("add_new_book", END)
-graph_builder.add_edge("recommend_book", END)
-graph_builder.add_edge("summerize_book", END)
-graph_builder.add_edge("chatbot", END)
-graph = graph_builder.compile()
+graph = workflow.compile
+
+# graph_builder.set_entry_point("classify_intent")
+# graph_builder.add_edge("greet", END)
+# graph_builder.add_edge("add_new_book", END)
+# graph_builder.add_edge("recommend_book", END)
+# graph_builder.add_edge("summerize_book", END)
+# graph_builder.add_edge("chatbot", END)
+# graph = graph_builder.compile()
 
 textlist = []
 
