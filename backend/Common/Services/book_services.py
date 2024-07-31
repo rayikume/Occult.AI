@@ -17,10 +17,13 @@ def create_book(db: Session, book: BookSchema):
         raise HTTPException(status_code=400, detail="Author not found")
     
     db_book = Book(
-        title=book.title,
-        author_id=book.author_id,
-        genre=book.genre,
-        description=book.description
+        title = book.title,
+        subtitle = book.subtitle,
+        genre = book.genre,
+        thumbnail = book.thumbnail,
+        description = book.description,
+        published_year = book.published_year,
+        average_rating = book.average_rating
     )
     try:
             db.add(db_book)

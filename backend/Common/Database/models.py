@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Float, Integer, String, DateTime, ForeignKey, Text, Numeric
 from sqlalchemy.orm import relationship, declarative_base
 from datetime import datetime
 
@@ -38,18 +38,19 @@ class Author(Base):
     __tablename__ = "authors"
 
     author_id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    biography = Column(String)
-
-    books = relationship("Book", back_populates="author")
+    name = Column(String(500))
+    biography = Column(Text)
 
 class Book(Base):
     __tablename__ = "books"
 
     book_id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    author_id = Column(Integer, ForeignKey("authors.author_id"))
-    genre = Column(String)
-    description = Column(String)
-
-    author = relationship("Author", back_populates="books")
+    title = Column(String(500))
+    subtitle = Column(String(500))
+    author = Column(String(500))
+    author_id = Column(Integer, index=True)
+    genre = Column(String(500))
+    thumbnail = Column(Text)
+    description = Column(Text)
+    published_year = Column(String(30))
+    average_rating = Column(String(30))

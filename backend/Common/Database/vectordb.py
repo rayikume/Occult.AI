@@ -13,12 +13,12 @@ import time
 # VECTOR DATABASE
 # start = time.time()
 
-chroma_client = chromadb.PersistentClient(path="/Users/aalbusayla001/Desktop/July2024 Projects/Occult.branch/Chroma_db")
+chroma_client = chromadb.PersistentClient(path="/Users/aalbusayla001/Desktop/July2024 Projects/Occult_AI/backend/Chroma_db")
 book_collection = chroma_client.get_or_create_collection(name="Book_Collection")
 # dataset = []
 
 # df = pd.read_csv('books.csv')
-# df = df.loc[5001:6000]
+# df = df.loc[6001:6800]
 # books_df_cleaned = df.copy()
 # print(df)
 # categorical = ['authors', 'subtitle', 'categories', 'thumbnail', 'description']
@@ -31,7 +31,7 @@ book_collection = chroma_client.get_or_create_collection(name="Book_Collection")
 #     books_df_cleaned.fillna({f'{column}': -1}, inplace=True)
 
 # def getBooks(row):
-#     text = f"book title: {row['title']}, catagories: {row['categories']}, subtitle: {row['subtitle']}, description: {row['description']}"
+#     text = f"title: {row['title']}, subtitle: {row['subtitle']}, authors: {row['authors']}, catagories: {row['categories']}, thumbnail: {row['thumbnail']}, description: {row['description']}, published_year: {row['published_year']}, average_rating: {row['average_rating']}"
 #     dataset.append(text)
 
 # books_df_cleaned.apply(getBooks, axis=1)
