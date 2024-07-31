@@ -9,12 +9,12 @@ from Common.Services import book_services
 
 router = APIRouter()
 
-@router.get("/books", response_model=List[BookSchema], tags=["Books"], operation_id="get_books_list")
+@router.get("/", response_model=List[BookSchema], tags=["Books"], operation_id="get_books_list")
 def get_books(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     log_user_activity(db, current_user['username'], "Searched for all books")
     return book_services.get_books(db)
 
-@router.get("/books/{book_id}", response_model=BookSchema, tags=["Books"], operation_id="get_book_by_title")
+@router.get("/{book_id}", response_model=BookSchema, tags=["Books"], operation_id="get_book_by_title")
 def get_book(book_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     book = book_services.get_book_by_id(db, book_id)
     if not book:
@@ -22,17 +22,17 @@ def get_book(book_id: int, db: Session = Depends(get_db), current_user: dict = D
     log_user_activity(db, current_user['username'], f"Searched for book with title: {book['title']}")
     return book
 
-@router.post("/books", response_model=BookSchema, tags=["Books"], operation_id="create_book_record")
+@router.post("/", response_model=BookSchema, tags=["Books"], operation_id="create_book_record")
 def create_book(book: BookSchema, db: Session = Depends(get_db), current_user: dict = Depends(admin_required)):
     log_user_activity(db, current_user['username'], "Book creation")
     return book_services.create_book(db, book)
 
-@router.put("/books/{book_id}", response_model=BookSchema, tags=["Books"], operation_id="update_book_record")
+@router.put("/{book_id}", response_model=BookSchema, tags=["Books"], operation_id="update_book_record")
 def update_book(book_id: int, book: BookSchema, db: Session = Depends(get_db), current_user: dict = Depends(admin_required)):
     log_user_activity(db, current_user['username'], "Book update")
     return book_services.update_book(db, book_id, book)
 
-@router.delete("/books/{book_id}", tags=["Books"])
+@router.delete("/{book_id}", tags=["Books"])
 def delete_book(book_id: int, db: Session = Depends(get_db), current_user: dict = Depends(admin_required)):
     log_user_activity(db, current_user['username'], "Book deletion")
     return book_services.delete_book(db, book_id)

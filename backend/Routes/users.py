@@ -11,7 +11,7 @@ from Middleware.logger import log_user_activity
 
 router = APIRouter()
 
-@router.post("/users/register", response_model=UserSchema, tags=["Users"])
+@router.post("/register", response_model=UserSchema, tags=["Users"])
 def register_user(user: UserSchema, db: Session = Depends(get_db)):
     try:
         new_user = create_user(db, user)
@@ -20,7 +20,7 @@ def register_user(user: UserSchema, db: Session = Depends(get_db)):
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@router.post("/users/login", response_model=TokenSchema, tags=["Users"])
+@router.post("/login", response_model=TokenSchema, tags=["Users"])
 def login_user(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
@@ -30,7 +30,7 @@ def login_user(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = D
     log_user_activity(db, user.username, "User login")
     return {"access_token": access_token, "token_type": "bearer"}
 
-@router.get("/users/me", response_model=UserSchema, tags=["Users"])
+@router.get("/me", response_model=UserSchema, tags=["Users"])
 def read_users_me(current_user: dict = Depends(get_current_user), db: Session = Depends(get_db)):
     user = get_user_by_username(db, current_user['username'])
     if not user:

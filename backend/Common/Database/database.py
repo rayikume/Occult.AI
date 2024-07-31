@@ -1,44 +1,19 @@
-import pandas as pd
-from langchain_chroma import Chroma
-from langchain_community.document_loaders import TextLoader
-from langchain_community.embeddings.sentence_transformer import (
-    SentenceTransformerEmbeddings,
-)
-from langchain_text_splitters import CharacterTextSplitter
-import os
-os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
-import chromadb
-import time
-# start = time.time()
+from fastapi import Depends
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from typing import Annotated
+from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session
 
-chroma_client = chromadb.PersistentClient(path="/Users/aalbusayla001/Desktop/July2024 Projects/Occult.branch/Chroma_db")
-book_collection = chroma_client.get_or_create_collection(name="Book_Collection")
-# dataset = []
+URL_DATABASE = "postgresql://postgres:qwdfty54nm@localhost:5433/occult.db"
+engine = create_engine(URL_DATABASE)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# df = pd.read_csv('books.csv')
-# df = df.loc[5001:6000]
-# books_df_cleaned = df.copy()
-# print(df)
-# categorical = ['authors', 'subtitle', 'categories', 'thumbnail', 'description']
-# numerical = ['published_year', 'average_rating', 'num_pages', 'ratings_count']
+def get_db_connection():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-# for column in categorical:
-#     books_df_cleaned.fillna({f'{column}': 'unknown'}, inplace=True)
-
-# for column in numerical:
-#     books_df_cleaned.fillna({f'{column}': -1}, inplace=True)
-
-# def getBooks(row):
-#     text = f"book title: {row['title']}, catagories: {row['categories']}, subtitle: {row['subtitle']}, description: {row['description']}"
-#     dataset.append(text)
-
-# books_df_cleaned.apply(getBooks, axis=1)
-
-# ids1 = books_df_cleaned["isbn10"].to_list()
-
-# book_collection.upsert(
-#     documents=dataset,
-#     ids=ids1
-# )
-
-# print(time.time() - start)
+db_dependencies = Annotated[Session, Depends(get_db_connection)]

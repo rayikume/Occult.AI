@@ -12,7 +12,7 @@ from langgraph.graph.message import add_messages, AnyMessage
 from langchain.output_parsers import PydanticOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain_core.pydantic_v1 import BaseModel, Field, validator
-from Common.Database.database import book_collection
+from Common.Database.vectordb import book_collection
 from chromadb.utils import embedding_functions
 
 from langchain_anthropic import ChatAnthropic
@@ -21,7 +21,6 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import Runnable, RunnableConfig
 
 os.environ["LANGCHAIN_API_KEY"] = "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"
-# os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_ENDPOINT"] = "https://api.smith.langchain.com"
 
