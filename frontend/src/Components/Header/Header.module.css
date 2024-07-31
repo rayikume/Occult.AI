@@ -1,25 +1,29 @@
 #flex {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  gap: 30px;
-  margin-bottom: 30px;
-  margin-top: 50px;
 }
 
 .title {
-  height: 12vh;
-  width: 60vh;
+  height: 7vh;
   display: flex;
-  justify-content: center;
   align-items: center;
-  border-radius: 10px;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-left: 8vh;
+  margin-right: 8vh;
+  border-bottom: 1px solid #fafafa;
+}
+
+.logo {
   font-size: 24px;
-  background-color: grey;
+}
+
+.userLogo {
+  background-color: green;
 }
 
 .search_engine {
+  flex: 8;
   height: 3vh;
   width: 120vh;
   background-color: gray;
@@ -29,8 +33,25 @@
 
 .search_container {
   display: flex;
-  justify-content: center;
+  height: 4vh;
   align-items: center;
-  height: 6vh;
   margin-bottom: 50px;
+  background-color: #172242;
+  border-radius: 10px;
+  margin-left: 8vh;
+  margin-right: 8vh;
+}
+
+.search_icon {
+  flex: 1;
+  height: 3vh;
+}
+
+.like_filter {
+  flex: 1;
+  height: 3vh;
+}
+
+.gap {
+  flex: 10;
 }
