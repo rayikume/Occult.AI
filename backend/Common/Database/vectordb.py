@@ -13,7 +13,7 @@ import time
 # VECTOR DATABASE
 # start = time.time()
 
-chroma_client = chromadb.PersistentClient(path="/Users/aalbusayla001/Desktop/July2024 Projects/Occult_AI/backend/Chroma_db")
+chroma_client = chromadb.PersistentClient(path="/Users/aalbusayla001/Desktop/AugustProjects/Occult.AI/backend/Chroma_db")
 book_collection = chroma_client.get_or_create_collection(name="Book_Collection")
 # dataset = []
 

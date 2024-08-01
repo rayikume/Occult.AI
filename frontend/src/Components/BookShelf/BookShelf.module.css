@@ -10,12 +10,11 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  height: 450px;
+  height: Fixed (375px);
   width: calc(25% - 40px);
   margin-bottom: 55px;
   border-radius: 10px;
-  background-color: rgba(0, 0, 0, 0.2);
-  box-shadow: inset 10px -50px 94px 0 rgba(199, 199, 199, 0.2);
+  background-color: #172242;
   backdrop-filter: blur(10px);
 }
 
@@ -41,7 +40,7 @@
   font-size: 25;
 }
 
-img {
+.imgBook {
   max-width: 100%;
   max-height: 100%;
   position: absolute;

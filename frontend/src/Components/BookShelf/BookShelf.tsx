@@ -42,7 +42,7 @@ const BookShelf = () => {
         <div className={BookShelfCSS.book_container} key={book.book_id}>
           <div className={BookShelfCSS.book_img}>
             <img
-              className={BookShelfCSS.img}
+              className={BookShelfCSS.imgBook}
               src={book.thumbnail}
               alt={book.title}
             />
