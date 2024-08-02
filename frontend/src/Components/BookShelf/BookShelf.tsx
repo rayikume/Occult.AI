@@ -1,13 +1,20 @@
 import BookShelfCSS from "./BookShelf.module.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Heart from "../../Assets/Heart.svg";
+import ImageEmpty from "../../Assets/ImageEmpty.svg";
+import EmptyStar from "../../Assets/EmptyStar.svg";
 
 interface Book {
-  thumbnail: string;
-  title: string;
-  description: string;
   book_id: number;
+  title: string;
+  thumbnail: string;
+  published_year: string;
+  author: string;
+  subtitle: string;
   genre: string;
+  description: string;
+  average_rating: string;
 }
 
 const BookShelf = () => {
@@ -35,19 +42,43 @@ const BookShelf = () => {
     return <div>Loading...</div>;
   }
 
+  console.log(books);
+
   return (
     <div className={BookShelfCSS.book_shelf}>
       {error && <div>{error}</div>}
       {books.map((book) => (
-        <div className={BookShelfCSS.book_container} key={book.book_id}>
-          <div className={BookShelfCSS.book_img}>
+        <div className={BookShelfCSS.book_card} key={book.book_id}>
+          <div className={BookShelfCSS.book_header}>
+            <div className={BookShelfCSS.info_container}>
+              <h1>{book.title}</h1>
+              <div className={BookShelfCSS.more_info_container}>
+                <h2>{book.author}</h2>
+                <h2>{book.published_year}</h2>
+              </div>
+            </div>
             <img
-              className={BookShelfCSS.imgBook}
-              src={book.thumbnail}
-              alt={book.title}
-            />
+              className={BookShelfCSS.like_icon}
+              src={Heart}
+              alt="Like Icon"
+            ></img>
           </div>
-          <div className={BookShelfCSS.book_title}>{book.title}</div>
+          <div className={BookShelfCSS.imgContainer}>
+            <div className={BookShelfCSS.book_img}>
+              {book.thumbnail ? (
+                <img className={BookShelfCSS.imgBook} src={book.thumbnail} />
+              ) : (
+                <img className={BookShelfCSS.empty} src={ImageEmpty} />
+              )}
+            </div>
+          </div>
+          <div className={BookShelfCSS.cardfooter}>
+            <div className={BookShelfCSS.genre}>Genre: {book.genre}</div>
+            <div className={BookShelfCSS.ratingContainer}>
+              <img src={EmptyStar} />
+              <div className={BookShelfCSS.rating}>{book.average_rating}</div>
+            </div>
+          </div>
         </div>
       ))}
     </div>
