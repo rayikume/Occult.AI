@@ -19,6 +19,82 @@ interface Book {
   average_rating: string;
 }
 
+const BookCard = ({ book }: { book: Book }) => {
+  const [flipped, setFlipped] = useState(false);
+
+  const handleFlip = () => {
+    setFlipped(!flipped);
+  };
+
+  return (
+    <div className={BookShelfCSS.card}>
+      <div
+        className={`${BookShelfCSS.card_inner} ${
+          flipped ? BookShelfCSS.flipped : ""
+        }`}
+      >
+        <div className={`${BookShelfCSS.card_face} ${BookShelfCSS.front}`}>
+          <div className={BookShelfCSS.book_header}>
+            <div className={BookShelfCSS.info_container}>
+              <h1>{book.title}</h1>
+              <div className={BookShelfCSS.more_info_container}>
+                <h2>{book.author}</h2>
+                <h2>{book.published_year}</h2>
+              </div>
+            </div>
+            <img
+              className={BookShelfCSS.like_icon}
+              src={Heart}
+              alt="Like Icon"
+            />
+          </div>
+          <div className={BookShelfCSS.imgContainer}>
+            <div className={BookShelfCSS.book_img} onClick={handleFlip}>
+              {book.thumbnail ? (
+                <img className={BookShelfCSS.imgBook} src={book.thumbnail} />
+              ) : (
+                <img className={BookShelfCSS.empty} src={ImageEmpty} />
+              )}
+            </div>
+          </div>
+          <div className={BookShelfCSS.cardfooter}>
+            <div className={BookShelfCSS.genre}>Genre: {book.genre}</div>
+            <div className={BookShelfCSS.ratingContainer}>
+              {+book.average_rating > 0 && +book.average_rating < 2 ? (
+                <img src={EmptyStar} />
+              ) : +book.average_rating >= 2 && +book.average_rating < 4 ? (
+                <img className={BookShelfCSS.halfRating} src={HalfStar} />
+              ) : (
+                <img src={AlmostStar} />
+              )}
+              <div className={BookShelfCSS.rating}>{book.average_rating}</div>
+            </div>
+          </div>
+        </div>
+        <div className={`${BookShelfCSS.card_face} ${BookShelfCSS.back}`}>
+          <div className={BookShelfCSS.book_header}>
+            <div className={BookShelfCSS.info_container}>
+              <h1>{book.title}</h1>
+              <div className={BookShelfCSS.more_info_container}>
+                <h2>{book.author}</h2>
+                <h2>{book.published_year}</h2>
+              </div>
+            </div>
+            <img
+              className={BookShelfCSS.like_icon}
+              src={Heart}
+              alt="Like Icon"
+            />
+          </div>
+          <div className={BookShelfCSS.desc} onClick={handleFlip}>
+            {book.description}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const BookShelf = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,44 +124,7 @@ const BookShelf = () => {
     <div className={BookShelfCSS.book_shelf}>
       {error && <div>{error}</div>}
       {books.map((book) => (
-        <div className={BookShelfCSS.card} key={book.book_id}>
-          <div className={BookShelfCSS.book_header}>
-            <div className={BookShelfCSS.info_container}>
-              <h1>{book.title}</h1>
-              <div className={BookShelfCSS.more_info_container}>
-                <h2>{book.author}</h2>
-                <h2>{book.published_year}</h2>
-              </div>
-            </div>
-            <img
-              className={BookShelfCSS.like_icon}
-              src={Heart}
-              alt="Like Icon"
-            ></img>
-          </div>
-          <div className={BookShelfCSS.imgContainer}>
-            <div className={BookShelfCSS.book_img}>
-              {book.thumbnail ? (
-                <img className={BookShelfCSS.imgBook} src={book.thumbnail} />
-              ) : (
-                <img className={BookShelfCSS.empty} src={ImageEmpty} />
-              )}
-            </div>
-          </div>
-          <div className={BookShelfCSS.cardfooter}>
-            <div className={BookShelfCSS.genre}>Genre: {book.genre}</div>
-            <div className={BookShelfCSS.ratingContainer}>
-              {+book.average_rating > 0 && +book.average_rating < 2 ? (
-                <img src={EmptyStar} />
-              ) : +book.average_rating >= 2 && +book.average_rating < 4 ? (
-                <img className={BookShelfCSS.halfRating} src={HalfStar} />
-              ) : (
-                <img src={AlmostStar} />
-              )}
-              <div className={BookShelfCSS.rating}>{book.average_rating}</div>
-            </div>
-          </div>
-        </div>
+        <BookCard key={book.book_id} book={book} />
       ))}
     </div>
   );
