@@ -7,13 +7,20 @@
   gap: 50px;
 }
 
-.book_card {
+.card {
   display: flex;
   flex-direction: column;
   background-color: #172242;
   height: 420px;
   border-radius: 8px;
   width: calc(22%);
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+}
+
+.card-container.flipped .card {
+  transform: rotateY(180deg);
 }
 
 .book_header {
@@ -74,6 +81,7 @@ h2 {
   height: 300px;
   background-color: #445a9a;
   border-radius: 8px;
+  cursor: pointer;
 }
 
 .imgBook {
@@ -115,4 +123,9 @@ h2 {
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+.halfRating {
+  margin-right: -15%;
+  padding: 0%;
 }

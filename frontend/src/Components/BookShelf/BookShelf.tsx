@@ -4,6 +4,8 @@ import axios from "axios";
 import Heart from "../../Assets/Heart.svg";
 import ImageEmpty from "../../Assets/ImageEmpty.svg";
 import EmptyStar from "../../Assets/EmptyStar.svg";
+import HalfStar from "../../Assets/halfStar.svg";
+import AlmostStar from "../../Assets/AlmostStar.svg";
 
 interface Book {
   book_id: number;
@@ -42,13 +44,11 @@ const BookShelf = () => {
     return <div>Loading...</div>;
   }
 
-  console.log(books);
-
   return (
     <div className={BookShelfCSS.book_shelf}>
       {error && <div>{error}</div>}
       {books.map((book) => (
-        <div className={BookShelfCSS.book_card} key={book.book_id}>
+        <div className={BookShelfCSS.card} key={book.book_id}>
           <div className={BookShelfCSS.book_header}>
             <div className={BookShelfCSS.info_container}>
               <h1>{book.title}</h1>
@@ -75,7 +75,13 @@ const BookShelf = () => {
           <div className={BookShelfCSS.cardfooter}>
             <div className={BookShelfCSS.genre}>Genre: {book.genre}</div>
             <div className={BookShelfCSS.ratingContainer}>
-              <img src={EmptyStar} />
+              {+book.average_rating > 0 && +book.average_rating < 2 ? (
+                <img src={EmptyStar} />
+              ) : +book.average_rating >= 2 && +book.average_rating < 4 ? (
+                <img className={BookShelfCSS.halfRating} src={HalfStar} />
+              ) : (
+                <img src={AlmostStar} />
+              )}
               <div className={BookShelfCSS.rating}>{book.average_rating}</div>
             </div>
           </div>
