@@ -1,3 +1,18 @@
 .footergap {
   height: 50px;
 }
+
+.homepage {
+  position: relative;
+}
+
+.chatlogo_container {
+  position: fixed;
+  z-index: 10;
+  bottom: 10px;
+  right: 20px;
+}
+
+.chatbot {
+  cursor: pointer;
+}
