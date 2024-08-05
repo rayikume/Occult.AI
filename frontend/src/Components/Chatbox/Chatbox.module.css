@@ -1,0 +1,97 @@
+.chatlogo_container {
+  position: fixed;
+  z-index: 10;
+  bottom: 10px;
+  right: 20px;
+}
+
+.chatbotIcon {
+  cursor: pointer;
+}
+
+.chatbox_container {
+  display: flex;
+  flex-direction: column;
+  height: 460.5px;
+  width: 339px;
+  background-color: #000000;
+  align-items: center;
+  border-radius: 8px;
+  position: fixed;
+  z-index: 11;
+  bottom: 77px;
+  right: 80px;
+  border-radius: 8px;
+}
+
+.chatbot_title {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.chatbox {
+  height: 393px;
+  width: 305px;
+  background-color: #172242;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 5px;
+}
+
+.message {
+  display: flex;
+  padding: 10px;
+  margin: 10px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+.user {
+  background-color: #445a9a;
+  align-self: flex-end;
+  justify-content: flex-end;
+  text-align: right;
+  margin-left: 70px;
+}
+
+.assistant {
+  background-color: #445a9a;
+  text-align: left;
+  align-self: flex-start;
+  justify-content: flex-start;
+  text-align: left;
+  margin-right: 70px;
+}
+
+.input_container {
+  display: flex;
+  margin: 5px;
+  gap: 5px;
+}
+
+.prompt_input {
+  background-color: #445a9a;
+  flex: 6;
+  height: 30px;
+  border-radius: 20px;
+  border-style: none;
+  padding-left: 15px;
+}
+
+.prompt_submit {
+  flex: 1;
+  background-color: #5d79cf;
+  border-radius: 20px;
+  border-style: none;
+  cursor: pointer;
+}
