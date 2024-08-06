@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ChatboxCSS from "./Chatbox.module.css";
 import ChatIcon from "../../Assets/ChatIcon.svg";
-import Send from "../../Assets/Send.svg";
+import aniLoader from "../../Assets/aniLoader.svg";
 import axios from "axios";
 
 interface Message {
@@ -79,7 +79,7 @@ const Chatbox = () => {
                 <div
                   className={`${ChatboxCSS.message} ${ChatboxCSS.assistant}`}
                 >
-                  ...
+                  <img src={aniLoader} />
                 </div>
               )}
             </div>
