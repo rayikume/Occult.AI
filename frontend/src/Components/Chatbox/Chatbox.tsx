@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ChatboxCSS from "./Chatbox.module.css";
 import ChatIcon from "../../Assets/ChatIcon.svg";
 import aniLoader from "../../Assets/aniLoader.svg";
@@ -14,6 +14,7 @@ const Chatbox = () => {
   const [input, setInput] = useState<string>("");
   const [isChatbotVisible, setIsChatbotVisible] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const chatEndRef = useRef<HTMLDivElement | null>(null);
 
   const handleSend = async () => {
     if (!input.trim()) {
@@ -45,6 +46,13 @@ const Chatbox = () => {
   const toggleChatbotVisibility = () => {
     setIsChatbotVisible(!isChatbotVisible);
   };
+
+  useEffect(() => {
+    // Scroll to the bottom whenever messages change
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   return (
     <>
@@ -82,6 +90,7 @@ const Chatbox = () => {
                   <img src={aniLoader} />
                 </div>
               )}
+              <div ref={chatEndRef} />
             </div>
             <div className={ChatboxCSS.input_container}>
               <input
