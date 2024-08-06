@@ -12,7 +12,8 @@ interface Message {
 const Chatbox = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>("");
-  const [isChatbotVisible, setIsChatbotVisible] = useState(false);
+  const [isChatbotVisible, setIsChatbotVisible] = useState<boolean>(false);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   const handleSend = async () => {
     if (!input.trim()) {
@@ -22,6 +23,7 @@ const Chatbox = () => {
     const userMessage: Message = { role: "user", content: input };
     setMessages([...messages, userMessage]);
     setInput("");
+    setIsProcessing(true);
 
     try {
       const response = await axios.post("http://127.0.0.1:8000/query", {
@@ -33,8 +35,10 @@ const Chatbox = () => {
         content: response.data,
       };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
+      setIsProcessing(false);
     } catch (error) {
       alert(`Error fetching chatbot response: ${error}`);
+      setIsProcessing(false);
     }
   };
 
@@ -71,6 +75,13 @@ const Chatbox = () => {
                   {msg.content}
                 </div>
               ))}
+              {isProcessing && (
+                <div
+                  className={`${ChatboxCSS.message} ${ChatboxCSS.assistant}`}
+                >
+                  ...
+                </div>
+              )}
             </div>
             <div className={ChatboxCSS.input_container}>
               <input
