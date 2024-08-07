@@ -5,8 +5,8 @@ from typing import List
 from Common.Database.database import get_db_connection as get_db
 from Common.Database.models import UserActivity
 from Schemas.user import UserSchema, TokenSchema, UserActivitySchema
-from Middleware.security import create_access_token, get_current_user, admin_required
-from Common.Services.user_services import get_user_by_username, create_user, authenticate_user
+from Middleware.auth import create_access_token, get_current_user, admin_required
+from Common.Services.userServices import get_user_by_username, create_user, authenticate_user
 from Middleware.logger import log_user_activity
 
 router = APIRouter()

@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from typing import List
 from Common.Database.database import get_db_connection as get_db
 from Schemas.author import AuthorSchema
-from Middleware.security import get_current_user, admin_required
-from Common.Services.author_services import get_authors, get_author_by_id, create_author, update_author, delete_author
+from Middleware.auth import get_current_user, admin_required
+from Common.Services.authorServices import get_authors, get_author_by_id, create_author, update_author, delete_author
 
 router = APIRouter()
 

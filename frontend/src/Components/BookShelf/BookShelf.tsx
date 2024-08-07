@@ -106,10 +106,15 @@ const BookShelf = () => {
         const response = await axios.get("http://127.0.0.1:8000/books");
         setBooks(response.data);
         setLoading(false);
-      } catch (error) {
-        setError("Error fetching data");
-        console.error("Error fetching data:", error);
-        setLoading(false);
+      } catch (error: any) {
+        if (error.response.status === 401) {
+          setError("Unauthorized access. Please log in.");
+          setLoading(false);
+        } else {
+          setError("Error fetching data");
+          console.error("Error fetching data:", error);
+          setLoading(false);
+        }
       }
     };
 

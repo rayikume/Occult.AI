@@ -14,7 +14,6 @@ origins = [
     "http://127.0.0.1:5500",
     "http://127.0.0.1:5173",
     "http://localhost:5173"
-    # add other origins as needed
 ]
 
 app.add_middleware(
@@ -39,7 +38,6 @@ async def upload_csv(file: UploadFile = File(...), db: Session = Depends(get_db_
     if not file.filename.endswith('.csv'):
         raise HTTPException(status_code=400, detail="Invalid file format. Please upload a CSV file.")
 
-    # Read and parse the CSV file
     content = await file.read()
     reader = csv.DictReader(content.decode('utf-8').splitlines())
 
@@ -68,9 +66,7 @@ async def upload_csv(file: UploadFile = File(...), db: Session = Depends(get_db_
         )
         books.append(book)
 
-    # Insert the books into the database
     db.add_all(books)
     db.commit()
-
 
     return {"status": "success", "message": f"{len(books)} books and authors have been added to the database"}

@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from typing import Optional
 import json
 
-SECRET_KEY = "your-secret-key"
+SECRET_KEY = "qwdfty54nm"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 10
 

@@ -68,8 +68,7 @@ def classify_intent(state: State):
 
 def chatbot(state: State):
     promptlit = state["messages"][-1].content
-    template = """You are an AI assistant called Nerd AI that provide summary of a book the user want.
-    always begin your reply with 'erm... Actually' and always have the tone of a nerdy guy that sees himself as highly intellectual person.
+    template = """You are an AI assistant that provide summary of a book the user want.
     if the user say somwthing outside of books always steer the conversation back to books.
     make your response short and to the point
     user's input/question: {prompt}
@@ -84,9 +83,8 @@ def chatbot(state: State):
 
 def greet(state: State):
     promptlit = state["messages"][-1].content
-    template = """You are an AI assistant called Nerd AI that greet bookworms and ask if they want any book suggestions.
-    always begin your reply with 'erm... Actually' and always have the tone of a nerdy guy that sees himself as highly intellectual person.
-    bookworms input: {prompt}
+    template = """You are an AI assistant that greet users and ask if they want any book suggestions.
+    users input: {prompt}
     """
     prompt = ChatPromptTemplate.from_template(template)
     chain = prompt | model
@@ -98,8 +96,7 @@ def greet(state: State):
 
 def summerize_book(state: State):
     promptlit = state["messages"][-1].content
-    template = """You are an AI assistant called Nerd AI that provide summary of a book the user want.
-    always begin your reply with 'erm... Actually' and always have the tone of a nerdy guy that sees himself as highly intellectual person.
+    template = """You are an AI assistant that provide summary of a book the user want.
     make it concise and comprahensive.
     user's input: {prompt}
     """

@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from Common.Database.vectordb import book_collection
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama.llms import OllamaLLM
-from Common.Services.query_services import getResponse
+from Common.Services.queryServices import getResponse
 import numpy as np
 import chromadb
 from chromadb.config import Settings
