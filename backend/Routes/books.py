@@ -9,14 +9,14 @@ from Common.Services import bookServices
 
 router = APIRouter()
 
-# @router.get("/", response_model=List[BookSchema], tags=["Books"], operation_id="get_books_list")
-# def get_books(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
-#     log_user_activity(db, current_user['username'], "Searched for all books")
-#     return bookServices.get_books(db)
-
-@router.get("/")
-def get_books(db: Session = Depends(get_db)):
+@router.get("/", response_model=List[BookSchema], tags=["Books"], operation_id="get_books_list")
+def get_books(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    log_user_activity(db, current_user['username'], "Searched for all books")
     return bookServices.get_books(db)
+
+# @router.get("/")
+# def get_books(db: Session = Depends(get_db)):
+#     return bookServices.get_books(db)
 
 @router.get("/{book_id}", response_model=BookSchema, tags=["Books"], operation_id="get_book_by_title")
 def get_book(book_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):

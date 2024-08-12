@@ -103,18 +103,24 @@ const BookShelf = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/books");
+        const token = localStorage.getItem("accessToken");
+        console.log(token);
+        const response = await axios.get("http://127.0.0.1:8000/books", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log(response);
         setBooks(response.data);
         setLoading(false);
       } catch (error: any) {
         if (error.response.status === 401) {
           setError("Unauthorized access. Please log in.");
-          setLoading(false);
         } else {
           setError("Error fetching data");
           console.error("Error fetching data:", error);
-          setLoading(false);
         }
+        setLoading(false);
       }
     };
 

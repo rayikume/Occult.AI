@@ -64,6 +64,7 @@ const LoginFront = () => {
       if (response.status === 200) {
         localStorage.setItem("accessToken", response.data.access_token);
         setTokenExpiration(Date.now() + 10 * 60 * 1000);
+        navigate("/");
       } else {
         console.error(response.data.detail);
       }
