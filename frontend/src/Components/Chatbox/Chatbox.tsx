@@ -48,7 +48,6 @@ const Chatbox = () => {
   };
 
   useEffect(() => {
-    // Scroll to the bottom whenever messages change
     if (chatEndRef.current) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
@@ -96,6 +95,7 @@ const Chatbox = () => {
               <input
                 type="text"
                 value={input}
+                placeholder="Enter prompt here"
                 className={ChatboxCSS.prompt_input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}

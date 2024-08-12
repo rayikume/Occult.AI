@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from Common.Database.database import get_db_connection as get_db
 from Common.Database.models import UserActivity
-from Schemas.user import UserSchema, TokenSchema, UserActivitySchema
+from Schemas.user import UserSchema, TokenSchema, UserActivitySchema, LoginRequest
 from Middleware.auth import create_access_token, get_current_user, admin_required
 from Common.Services.userServices import get_user_by_username, create_user, authenticate_user
 from Middleware.logger import log_user_activity
@@ -21,8 +21,8 @@ def register_user(user: UserSchema, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.post("/login", response_model=TokenSchema, tags=["Users"])
-def login_user(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user = authenticate_user(db, form_data.username, form_data.password)
+def login_user(request: LoginRequest, db: Session = Depends(get_db)):
+    user = authenticate_user(db, request.username, request.password)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     

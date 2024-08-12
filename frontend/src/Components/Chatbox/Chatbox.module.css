@@ -88,6 +88,10 @@
   padding-left: 15px;
 }
 
+.prompt_input::placeholder {
+  color: rgb(183, 184, 185);
+}
+
 .prompt_submit {
   flex: 1;
   background-color: #5d79cf;

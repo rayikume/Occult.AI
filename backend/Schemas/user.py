@@ -11,6 +11,10 @@ class TokenSchema(BaseModel):
     access_token: str
     token_type: str
 
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
 class UserActivitySchema(BaseModel):
     username: str
     activity: str
