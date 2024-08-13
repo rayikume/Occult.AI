@@ -5,8 +5,21 @@ import LikeIcon from "../../Assets/LikeIcon.svg";
 import Heart from "../../Assets/Heart.svg";
 import { useState } from "react";
 
-const SearchBar = ({ displayLikedBooks }: { displayLikedBooks: any }) => {
+const SearchBar = ({
+  displayLikedBooks,
+  setSearch,
+}: {
+  displayLikedBooks: any;
+  setSearch: any;
+}) => {
   const [isLikeClicked, setisLikeClicked] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setInputValue(value);
+    setSearch(value);
+  };
 
   const handleClick = () => {
     setisLikeClicked(!isLikeClicked);
@@ -24,6 +37,8 @@ const SearchBar = ({ displayLikedBooks }: { displayLikedBooks: any }) => {
         type="text"
         className={SearchBarCSS.search_engine}
         placeholder="Type book title/genre/name of author"
+        value={inputValue}
+        onChange={handleSearchChange}
       />
       <img
         className={SearchBarCSS.search_icon}

@@ -7,6 +7,7 @@ import { useState } from "react";
 const Home = () => {
   const [likedBooks, setLikedBooks] = useState<number[]>([]);
   const [showLikedBooks, setShowLikedBooks] = useState(false);
+  const [search, setSearch] = useState("");
 
   const handleLikeToggle = (bookId: number) => {
     setLikedBooks((prevLikedBooks) =>
@@ -18,11 +19,12 @@ const Home = () => {
 
   return (
     <div className={HomeCSS.homepage}>
-      <Header displayLikedBooks={setShowLikedBooks} />
+      <Header displayLikedBooks={setShowLikedBooks} setSearch={setSearch} />
       <BookShelf
         onLikeToggle={handleLikeToggle}
         likedBooks={likedBooks}
         showLikedBooks={showLikedBooks}
+        search={search}
       />
       <Chatbox />
     </div>

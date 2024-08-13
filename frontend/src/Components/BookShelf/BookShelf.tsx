@@ -110,10 +110,12 @@ const BookShelf = ({
   onLikeToggle,
   likedBooks,
   showLikedBooks,
+  search,
 }: {
   onLikeToggle: (id: number) => void;
   likedBooks: number[];
   showLikedBooks: boolean;
+  search: string;
 }) => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
@@ -146,9 +148,16 @@ const BookShelf = ({
     fetchData();
   }, []);
 
-  const filteredBooks = showLikedBooks
-    ? books.filter((book) => likedBooks.includes(book.book_id))
-    : books;
+  const filteredBooks = books
+    .filter((book) =>
+      showLikedBooks ? likedBooks.includes(book.book_id) : true
+    )
+    .filter(
+      (book) =>
+        book.title.toLowerCase().includes(search.toLowerCase()) ||
+        book.author.toLowerCase().includes(search.toLowerCase()) ||
+        book.genre.toLowerCase().includes(search.toLowerCase())
+    );
 
   if (loading) {
     return <div>Loading...</div>;
