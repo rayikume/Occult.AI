@@ -111,11 +111,13 @@ const BookShelf = ({
   likedBooks,
   showLikedBooks,
   search,
+  filter,
 }: {
   onLikeToggle: (id: number) => void;
   likedBooks: number[];
   showLikedBooks: boolean;
   search: string;
+  filter: string;
 }) => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
@@ -148,16 +150,41 @@ const BookShelf = ({
     fetchData();
   }, []);
 
-  const filteredBooks = books
-    .filter((book) =>
-      showLikedBooks ? likedBooks.includes(book.book_id) : true
-    )
-    .filter(
-      (book) =>
-        book.title.toLowerCase().includes(search.toLowerCase()) ||
-        book.author.toLowerCase().includes(search.toLowerCase()) ||
-        book.genre.toLowerCase().includes(search.toLowerCase())
-    );
+  const sortBooks = (books: Book[]) => {
+    switch (filter) {
+      case "mostRecent":
+        return books.sort(
+          (a, b) => parseInt(b.published_year) - parseInt(a.published_year)
+        );
+      case "earliest":
+        return books.sort(
+          (a, b) => parseInt(a.published_year) - parseInt(b.published_year)
+        );
+      case "topRated":
+        return books.sort(
+          (a, b) => parseFloat(b.average_rating) - parseFloat(a.average_rating)
+        );
+      case "leastRated":
+        return books.sort(
+          (a, b) => parseFloat(a.average_rating) - parseFloat(b.average_rating)
+        );
+      default:
+        return books;
+    }
+  };
+
+  const filteredBooks = sortBooks(
+    books
+      .filter((book) =>
+        showLikedBooks ? likedBooks.includes(book.book_id) : true
+      )
+      .filter(
+        (book) =>
+          book.title.toLowerCase().includes(search.toLowerCase()) ||
+          book.author.toLowerCase().includes(search.toLowerCase()) ||
+          book.genre.toLowerCase().includes(search.toLowerCase())
+      )
+  );
 
   if (loading) {
     return <div>Loading...</div>;

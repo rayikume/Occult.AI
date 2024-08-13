@@ -5,14 +5,20 @@ import SearchBar from "../SearchBar/SearchBar";
 const Header = ({
   displayLikedBooks,
   setSearch,
+  setFilter,
 }: {
   displayLikedBooks: any;
   setSearch: any;
+  setFilter: any;
 }) => {
   return (
     <div id={HeaderCSS.flex}>
       <Logo />
-      <SearchBar displayLikedBooks={displayLikedBooks} setSearch={setSearch} />
+      <SearchBar
+        displayLikedBooks={displayLikedBooks}
+        setSearch={setSearch}
+        setFilter={setFilter}
+      />
     </div>
   );
 };

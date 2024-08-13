@@ -44,3 +44,25 @@
   color: #afb1b6;
   opacity: 1;
 }
+
+.filter_options {
+  position: fixed;
+  z-index: 12;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  border-radius: 8px;
+  top: 13%;
+  left: 46%;
+  background-color: #172242;
+  height: 200px;
+  width: 135px;
+  border-style: solid;
+  border-color: #24366b;
+}
+
+.tile {
+  cursor: pointer;
+}
