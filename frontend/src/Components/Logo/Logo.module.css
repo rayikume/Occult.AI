@@ -43,6 +43,8 @@
   background-color: #172242;
   height: 155px;
   width: 131px;
+  border-style: solid;
+  border-color: #24366b;
 }
 
 .bannerOUT {

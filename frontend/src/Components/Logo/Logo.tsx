@@ -9,6 +9,7 @@ const Logo = () => {
   const [isProfileClicked, setIsProfileClicked] = useState<boolean>(false);
   const [isBannerVisible, setIsBannerVisible] = useState<boolean>(false);
   const navigate = useNavigate();
+  const token = localStorage.getItem("accessToken");
 
   const handleProfileClick = () => {
     handleProfile();
@@ -27,6 +28,11 @@ const Logo = () => {
     navigate("/login");
   };
 
+  const handleSignOut = () => {
+    localStorage.removeItem("accessToken");
+    navigate("/login");
+  };
+
   return (
     <div className={LogoCSS.title}>
       <div className={LogoCSS.logo}>
@@ -39,20 +45,24 @@ const Logo = () => {
           <img src={ProfileIcon} alt="Profile Icon" />
         )}
       </div>
-      {isBannerVisible && (
+      {isBannerVisible && token ? (
+        <div className={LogoCSS.banner}>
+          <div className={LogoCSS.tile}>Profile</div>
+          <div className={LogoCSS.tile}>Admin Panel</div>
+          <div
+            className={`${LogoCSS.tile} ${LogoCSS.logout}`}
+            onClick={handleSignOut}
+          >
+            Sign Out
+          </div>
+        </div>
+      ) : isBannerVisible && !token ? (
         <div className={LogoCSS.bannerOUT}>
           <div className={LogoCSS.tile} onClick={handleLogin}>
             Login/SignUp
           </div>
         </div>
-        // <div className={HeaderCSS.banner}>
-        //   <div className={HeaderCSS.tile}>Profile</div>
-        //   <div className={HeaderCSS.tile}>Admin Panel</div>
-        //   <div className={`${HeaderCSS.tile} ${HeaderCSS.logout}`}>
-        //     Sign Out
-        //   </div>
-        // </div>
-      )}
+      ) : null}
     </div>
   );
 };
