@@ -6,6 +6,7 @@ import ImageEmpty from "../../Assets/ImageEmpty.svg";
 import EmptyStar from "../../Assets/EmptyStar.svg";
 import HalfStar from "../../Assets/halfStar.svg";
 import AlmostStar from "../../Assets/AlmostStar.svg";
+import EmptyHeart from "../../Assets/EmptyHeart.svg";
 
 interface Book {
   book_id: number;
@@ -19,7 +20,15 @@ interface Book {
   average_rating: string;
 }
 
-const BookCard = ({ book }: { book: Book }) => {
+const BookCard = ({
+  book,
+  onLikeToggle,
+  isLiked,
+}: {
+  book: Book;
+  onLikeToggle: (bookId: number) => void;
+  isLiked: boolean;
+}) => {
   const [flipped, setFlipped] = useState(false);
 
   const handleFlip = () => {
@@ -44,8 +53,9 @@ const BookCard = ({ book }: { book: Book }) => {
             </div>
             <img
               className={BookShelfCSS.like_icon}
-              src={Heart}
+              src={isLiked ? Heart : EmptyHeart}
               alt="Like Icon"
+              onClick={() => onLikeToggle(book.book_id)}
             />
           </div>
           <div className={BookShelfCSS.imgContainer}>
@@ -82,8 +92,9 @@ const BookCard = ({ book }: { book: Book }) => {
             </div>
             <img
               className={BookShelfCSS.like_icon}
-              src={Heart}
+              src={isLiked ? Heart : EmptyHeart}
               alt="Like Icon"
+              onClick={() => onLikeToggle(book.book_id)}
             />
           </div>
           <div className={BookShelfCSS.desc} onClick={handleFlip}>
@@ -95,7 +106,15 @@ const BookCard = ({ book }: { book: Book }) => {
   );
 };
 
-const BookShelf = () => {
+const BookShelf = ({
+  onLikeToggle,
+  likedBooks,
+  showLikedBooks,
+}: {
+  onLikeToggle: (id: number) => void;
+  likedBooks: number[];
+  showLikedBooks: boolean;
+}) => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -127,6 +146,10 @@ const BookShelf = () => {
     fetchData();
   }, []);
 
+  const filteredBooks = showLikedBooks
+    ? books.filter((book) => likedBooks.includes(book.book_id))
+    : books;
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -134,8 +157,13 @@ const BookShelf = () => {
   return (
     <div className={BookShelfCSS.book_shelf}>
       {error && <div>{error}</div>}
-      {books.map((book) => (
-        <BookCard key={book.book_id} book={book} />
+      {filteredBooks.map((book) => (
+        <BookCard
+          key={book.book_id}
+          book={book}
+          onLikeToggle={onLikeToggle}
+          isLiked={likedBooks.includes(book.book_id)}
+        />
       ))}
     </div>
   );

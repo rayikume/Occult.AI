@@ -3,7 +3,7 @@ import SearchIcon from "../../Assets/Search.svg";
 import FilterIcon from "../../Assets/FilterIcon.svg";
 import LikeIcon from "../../Assets/LikeIcon.svg";
 
-const SearchBar = () => {
+const SearchBar = ({ displayLikedBooks }: { displayLikedBooks: any }) => {
   return (
     <div className={SearchBarCSS.search_container}>
       <img
@@ -26,6 +26,7 @@ const SearchBar = () => {
         className={SearchBarCSS.like_filter}
         src={LikeIcon}
         alt="Like Icon"
+        onClick={() => displayLikedBooks((prev: any) => !prev)}
       />
     </div>
   );
