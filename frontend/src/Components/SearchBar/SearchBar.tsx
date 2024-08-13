@@ -2,8 +2,17 @@ import SearchBarCSS from "./SearchBar.module.css";
 import SearchIcon from "../../Assets/Search.svg";
 import FilterIcon from "../../Assets/FilterIcon.svg";
 import LikeIcon from "../../Assets/LikeIcon.svg";
+import Heart from "../../Assets/Heart.svg";
+import { useState } from "react";
 
 const SearchBar = ({ displayLikedBooks }: { displayLikedBooks: any }) => {
+  const [isLikeClicked, setisLikeClicked] = useState(false);
+
+  const handleClick = () => {
+    setisLikeClicked(!isLikeClicked);
+    displayLikedBooks((prev: any) => !prev);
+  };
+
   return (
     <div className={SearchBarCSS.search_container}>
       <img
@@ -24,9 +33,9 @@ const SearchBar = ({ displayLikedBooks }: { displayLikedBooks: any }) => {
       <div className={SearchBarCSS.gap}></div>
       <img
         className={SearchBarCSS.like_filter}
-        src={LikeIcon}
+        src={isLikeClicked ? Heart : LikeIcon}
         alt="Like Icon"
-        onClick={() => displayLikedBooks((prev: any) => !prev)}
+        onClick={handleClick}
       />
     </div>
   );
