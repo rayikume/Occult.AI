@@ -20,7 +20,7 @@ def register_user(user: UserSchema, db: Session = Depends(get_db)):
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@router.post("/login", response_model=TokenSchema, tags=["Users"])
+@router.post("/login", tags=["Users"])
 def login_user(request: LoginRequest, db: Session = Depends(get_db)):
     user = authenticate_user(db, request.username, request.password)
     if not user:
@@ -28,7 +28,7 @@ def login_user(request: LoginRequest, db: Session = Depends(get_db)):
     
     access_token = create_access_token(data={"sub": user.username})
     log_user_activity(db, user.username, "User login")
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer", "user_role": user.role}
 
 @router.get("/me", response_model=UserSchema, tags=["Users"])
 def read_users_me(current_user: dict = Depends(get_current_user), db: Session = Depends(get_db)):

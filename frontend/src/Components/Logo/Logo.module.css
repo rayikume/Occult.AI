@@ -36,12 +36,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 20px;
   border-radius: 8px;
   top: 50px;
   right: 90px;
   background-color: #172242;
-  height: 155px;
+  height: fit-content;
   width: 131px;
   border-style: solid;
   border-color: #24366b;
@@ -54,7 +53,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 20px;
   border-radius: 8px;
   top: 50px;
   right: 90px;
@@ -67,6 +65,7 @@
 
 .tile {
   cursor: pointer;
+  padding: 12px;
 }
 
 .logout {

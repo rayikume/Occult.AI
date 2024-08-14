@@ -41,7 +41,6 @@ const LoginFront = () => {
       console.log(response);
       setUsernameNEW("");
       setPasswordNEW("");
-      navigate("/");
     } catch (error) {
       console.error(error);
     }
@@ -63,6 +62,7 @@ const LoginFront = () => {
       setPasswordNEW("");
       if (response.status === 200) {
         localStorage.setItem("accessToken", response.data.access_token);
+        localStorage.setItem("userRole", response.data.user_role);
         setTokenExpiration(Date.now() + 10 * 60 * 1000);
         navigate("/");
       } else {

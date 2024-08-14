@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LogoCSS from "./Logo.module.css";
 import LogoBook from "../../Assets/LogoBook.svg";
 import ProfileIcon from "../../Assets/ProfileIcon.svg";
@@ -8,8 +8,14 @@ import { useNavigate } from "react-router-dom";
 const Logo = () => {
   const [isProfileClicked, setIsProfileClicked] = useState<boolean>(false);
   const [isBannerVisible, setIsBannerVisible] = useState<boolean>(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const navigate = useNavigate();
   const token = localStorage.getItem("accessToken");
+
+  useEffect(() => {
+    const role = localStorage.getItem("userRole");
+    setUserRole(role);
+  }, []);
 
   const handleProfileClick = () => {
     handleProfile();
@@ -52,9 +58,11 @@ const Logo = () => {
       {isBannerVisible && token ? (
         <div className={LogoCSS.banner}>
           <div className={LogoCSS.tile}>Profile</div>
-          <div className={LogoCSS.tile} onClick={handleAdmin}>
-            Admin Panel
-          </div>
+          {userRole === "admin" && (
+            <div className={LogoCSS.tile} onClick={handleAdmin}>
+              Admin Panel
+            </div>
+          )}
           <div
             className={`${LogoCSS.tile} ${LogoCSS.logout}`}
             onClick={handleSignOut}
