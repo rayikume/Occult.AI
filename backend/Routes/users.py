@@ -4,9 +4,9 @@ from sqlalchemy.orm import Session
 from typing import List
 from Common.Database.database import get_db_connection as get_db
 from Common.Database.models import UserActivity
-from Schemas.user import UserSchema, TokenSchema, UserActivitySchema, LoginRequest
+from Schemas.user import UserSchema, TokenSchema, UserActivitySchema, LoginRequest, UserWithoutPass
 from Middleware.auth import create_access_token, get_current_user, admin_required
-from Common.Services.userServices import get_user_by_username, create_user, authenticate_user
+from Common.Services.userServices import get_user_by_username, create_user, authenticate_user, get_users
 from Middleware.logger import log_user_activity
 
 router = APIRouter()
@@ -42,3 +42,8 @@ def read_users_me(current_user: dict = Depends(get_current_user), db: Session = 
 def get_user_activities(db: Session = Depends(get_db), current_user: dict = Depends(admin_required)):
     activities = db.query(UserActivity).all()
     return activities
+
+@router.get("/all", response_model=List[UserWithoutPass], tags=["Admin"])
+def get_all_users(db: Session = Depends(get_db), current_user: dict = Depends(admin_required)):
+    log_user_activity(db, current_user['username'], "Displayed all users")
+    return get_users(db)

@@ -1,7 +1,7 @@
 .bookpanel {
   background-color: #172242;
   height: 75vh;
-  width: 100vh;
+  flex: 3;
   border-radius: 8px;
   display: flex;
   flex-direction: column;

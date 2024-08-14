@@ -12,7 +12,7 @@ import json
 
 SECRET_KEY = "qwdfty54nm"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 10
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/login")
 

@@ -28,3 +28,6 @@ def authenticate_user(db: Session, username: str, password: str) -> User:
     if not user or not verify_password(password, user.password_hash):
         return None
     return user
+
+def get_users(db: Session):
+    return db.query(User).all()

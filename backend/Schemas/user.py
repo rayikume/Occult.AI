@@ -19,3 +19,7 @@ class UserActivitySchema(BaseModel):
     username: str
     activity: str
     timestamp: datetime
+
+class UserWithoutPass(BaseModel):
+    username: str
+    role: str
