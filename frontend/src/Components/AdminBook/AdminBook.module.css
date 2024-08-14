@@ -1,0 +1,62 @@
+.bookpanel {
+  background-color: #172242;
+  height: 75vh;
+  width: 100vh;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  margin: 20px;
+  margin-top: 40px;
+  margin-left: 20px;
+  font-size: 20px;
+}
+
+.table_container {
+  overflow-y: scroll;
+  margin: 20px;
+  margin-top: 0px;
+  border: 1px solid #afb1b6;
+}
+
+.theader {
+  border: 1px solid #afb1b6;
+  padding: 8px;
+  background-color: #3b57b4;
+  border-top: 0px;
+}
+
+.theaderid {
+  border: 1px solid #afb1b6;
+  padding: 8px;
+  background-color: #3b57b4;
+  border-top: 0px;
+  border-left: 0px;
+}
+
+.theaderye {
+  border: 1px solid #afb1b6;
+  padding: 8px;
+  background-color: #3b57b4;
+  border-top: 0px;
+  border-right: 0px;
+}
+
+.tdesc {
+  border: 1px solid #afb1b6;
+  padding: 8px;
+}
+
+.tdescid {
+  border: 1px solid #afb1b6;
+  padding: 8px;
+  border-left: 0px;
+}
+
+.tdescye {
+  border: 1px solid #afb1b6;
+  padding: 8px;
+  border-right: 0px;
+}

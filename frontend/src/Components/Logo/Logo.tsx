@@ -33,6 +33,10 @@ const Logo = () => {
     navigate("/login");
   };
 
+  const handleAdmin = () => {
+    navigate("/admin");
+  };
+
   return (
     <div className={LogoCSS.title}>
       <div className={LogoCSS.logo}>
@@ -48,7 +52,9 @@ const Logo = () => {
       {isBannerVisible && token ? (
         <div className={LogoCSS.banner}>
           <div className={LogoCSS.tile}>Profile</div>
-          <div className={LogoCSS.tile}>Admin Panel</div>
+          <div className={LogoCSS.tile} onClick={handleAdmin}>
+            Admin Panel
+          </div>
           <div
             className={`${LogoCSS.tile} ${LogoCSS.logout}`}
             onClick={handleSignOut}
